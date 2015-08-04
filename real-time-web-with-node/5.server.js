@@ -19,10 +19,8 @@ var handleHTTP = function(req, res) {
 						done('Hello World: ' + msg);
 					});
 				})
-				.then(function(done, msg) {
-					setTimeout(function() {
-						res.end(msg);
-					}, 1000);
+				.val(function(msg) {
+					res.end(msg);
 				});
 
 		} else {
