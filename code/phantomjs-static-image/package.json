@@ -1,0 +1,19 @@
+{
+  "name": "phantomjs-static-image",
+  "version": "1.0.0",
+  "description": "Technical demo to general a static image on the fly with PhantomJS",
+  "main": "index.html",
+  "dependencies": {
+    "phantomjs": "^1.9.18",
+    "httpster": "^1.0.1"
+  },
+  "devDependencies": {
+    "httpster": "^1.0.1",
+    "phantomjs": "^1.9.18"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Roy Martin",
+  "license": "ISC"
+}
