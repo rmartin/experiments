@@ -2,19 +2,10 @@
 var webshot = require('webshot'),
     express = require('express'),
     app = express(),
-    options = {
-        screenSize: {
-            width: 1024,
-            height: 500
-        },
-        shotSize: {
-            width: 'all',
-            height: 'all'
-        }
-    };
+    options = {};
 
 app.get('/', function(req, res) {
-    var renderStream = webshot('http://localhost:3333/', null, options),
+    var renderStream = webshot('google.com', null, options),
         screenshot = '';
 
     // Capture the streaming output from the screenshot
