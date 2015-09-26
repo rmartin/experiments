@@ -88,8 +88,6 @@ var fork = _.curry(function(lastly, f, g, x) {
 var avg = fork(_.divide, _.sum, _.size); // change this
 assertEqual(3, avg([1, 2, 3, 4, 5]));
 
-
-
 console.log("All tests pass.");
 
 /******************************************
