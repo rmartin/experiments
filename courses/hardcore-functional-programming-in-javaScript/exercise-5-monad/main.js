@@ -31,17 +31,13 @@ var user = {
     }
 }
 
-var ex1 = undefined
+// Option with mjoin
+// var ex1 = _.compose(mjoin, map(safeGet('name')), mjoin, map(safeGet('street')), safeGet('address'));
+// Option with chain
+var ex1 = _.compose(chain(safeGet('name')), chain(safeGet('street')), safeGet('address'))
 
 assertDeepEqual(Maybe('Walnut St'), ex1(user))
 console.log("exercise 1...ok!")
-
-
-
-
-
-
-
 
 // Exercise 2
 // ==========
@@ -57,17 +53,13 @@ var pureLog = function(x) {
     return x;
 }.toIO();
 
-var ex2 = undefined
+// Option with mjoin
+// var ex2 = _.compose(mjoin, map(pureLog), getHref);
+// Option with chain
+var ex2 = _.compose(chain(pureLog), getHref);
 
-assertEqual("http://run.jsbin.io/runner", runIO(ex2(null)))
+assertEqual("http://localhost:3333/exercise-5-monad/", runIO(ex2(null)))
 console.log("exercise 2...ok!")
-
-
-
-
-
-
-
 
 
 // Exercise 3
@@ -75,19 +67,15 @@ console.log("exercise 2...ok!")
 // Use monads to first get the Post with getPost(), then pass it's id in to getComments().
 console.log("--------Start exercise 3--------")
 
-var ex3 = undefined
+// option with mjoin
+// var ex3 = _.compose(mjoin, map(compose(getComments, _.get('id'))) ,getPost);
+// option with chain
+var ex3 = _.compose(chain(compose(getComments, _.get('id'))) ,getPost);
 
 ex3(13).fork(log, function(res) {
     assertEqual(2, res.length)
     console.log("exercise 3...ok!")
 })
-
-
-
-
-
-
-
 
 
 // TEST HELPERS
