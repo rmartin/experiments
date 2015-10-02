@@ -29,7 +29,11 @@ define([
     };
 
     // PURE //////////////////////////////////////////////////
-    console.log('hello world');
+
+    // getDom :: String -> IO DOM
+    var getDom = $.toIO();
+
+    // var keypressStream = 
 
     // IMPURE /////////////////////////////////////////////////////
 
