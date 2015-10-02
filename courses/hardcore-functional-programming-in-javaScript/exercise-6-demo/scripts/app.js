@@ -33,10 +33,25 @@ define([
     // getDom :: String -> IO DOM
     var getDom = $.toIO();
 
-    // var keypressStream = 
+    // keypressStream :: Dom -> EventStream DomEvent
+    var keypressStream = listen('keyup');
+
+    // eventValue :: DomEvent -> String
+    var eventValue = compose(_.get('value'), _.get('target'));
+
+    // valueStream :: Dom -> EventStream String
+    var valueStream = compose(map(eventValue), keypressStream);
+
+    // termURL :: String -> URL
+    var termUrl = function(term){
+        return "http://gdata.youtube.com/feeds/api/videos?" +
+        $.param({q: term, alt: 'json'})
+    };
+
+    // urlStream :: Dom > EventStream URL
+    var urlStream = compose(map(termUrl), valueStream);
 
     // IMPURE /////////////////////////////////////////////////////
-
-
+    getDom('#search').map(urlStream).runIO().onValue(log);
 
 });

@@ -5,7 +5,7 @@ var webshot = require('webshot'),
     options = {};
 
 app.get('/', function(req, res) {
-    var renderStream = webshot('google.com', null, options),
+    var renderStream = webshot('http://localhost:3333/', null, options),
         screenshot = '';
 
     // Capture the streaming output from the screenshot
