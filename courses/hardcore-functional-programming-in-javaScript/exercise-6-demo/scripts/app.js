@@ -11,10 +11,10 @@ define([
     var log = function(x) {
         console.log(x);
         return x;
-    }
+    };
     var fork = _.curry(function(f, future) {
         return future.fork(log, f);
-    })
+    });
     var setHtml = _.curry(function(sel, x) {
         return $(sel).html(x);
     });
@@ -30,28 +30,55 @@ define([
 
     // PURE //////////////////////////////////////////////////
 
-    // getDom :: String -> IO DOM
-    var getDom = $.toIO();
+    //  api_key :: String
+  var api_key = 'AIzaSyBT4ZLuL6jrvBND_lCQQBNPodRHqscIOLw';
 
-    // keypressStream :: Dom -> EventStream DomEvent
-    var keypressStream = listen('keyup');
+  //+ eventValue :: DomEvent -> String
+  var eventValue = compose(_.get('value'), _.get('target'));
 
-    // eventValue :: DomEvent -> String
-    var eventValue = compose(_.get('value'), _.get('target'));
+  //+ valueStream :: DomEvent -> EventStream String
+  var valueStream = compose(map(eventValue), listen('keyup'));
 
-    // valueStream :: Dom -> EventStream String
-    var valueStream = compose(map(eventValue), keypressStream);
+  //+ termToUrl :: String -> URL
+  var termToUrl = function(term) {
+    return 'https://www.googleapis.com/youtube/v3/search?' +
+      $.param({part: 'snippet', q: term, key: api_key});
+  };
 
-    // termURL :: String -> URL
-    var termUrl = function(term){
-        return "https://www.googleapis.com/youtube/v3/videos?&part=snippet&maxResults=25" +
-        $.param({q: term, alt: 'json'})
-    };
+  //+ urlStream :: DomEvent -> EventStream String
+  var urlStream = compose(map(termToUrl), valueStream);
 
-    // urlStream :: Dom > EventStream URL
-    var urlStream = compose(map(termUrl), valueStream);
+  //+ getInputStream :: Selector -> IO EventStream String
+  var getInputStream = compose(map(urlStream), $.toIO());
 
-    // IMPURE /////////////////////////////////////////////////////
-    getDom('#search').map(urlStream).runIO().onValue(log);
+  //+ render :: Entry -> Dom
+  var render = function(e) {
+    return $('<li/>', {text: e.snippet.title, 'data-youtubeid': e.id.videoId});
+  };
+
+  //+ videoEntries :: YoutubeResponse -> [Dom]
+  var videoEntries = compose(map(render), _.get('items'));
+
+  //+ search :: URL -> Future [Dom]
+  var search = compose(map(videoEntries), http.getJSON);
+
+  //+ DomElement -> EventStream DomElement
+  var clickStream = compose(map(_.get('target')), listen('click'));
+
+  //+ URL -> String
+  var idInUrl = compose(last, _.split('/'));
+
+  //+ youtubeLink :: DomElement -> Maybe ID
+  var youtubeId = compose(map(idInUrl), Maybe, getData('youtubeid'));
+
+  // IMPURE /////////////////////////////////////////////////////
+
+  getInputStream('#search').runIO().onValue(
+    compose(fork(setHtml('#results')), search)
+  );
+
+  clickStream(document).onValue(
+    compose(map(compose(setHtml('#player'), Player.create)), youtubeId)
+  );
 
 });

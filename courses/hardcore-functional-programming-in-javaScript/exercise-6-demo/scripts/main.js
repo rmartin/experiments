@@ -4,13 +4,13 @@ require.config({
     baseUrl: './scripts',
     paths: {
         'jquery': '../bower_components/jquery/dist/jquery.min',
-        'ramda': 'vendor/ramda',
-        'pointfree': '../bower_components/pointfree/dist/pointfree.amd',
-        'future': 'vendor/data.future.umd',
-        'bacon': '../bower_components/bacon/dist/Bacon.min',
+        'ramda': '../../common/scripts/ramda.min',
+        'pointfree': '../../common/scripts/pointfree.amd',
+        'future': '../../common/scripts/data.future.umd',
+        'bacon': '../../common/scripts/Bacon.min',
         'socketio': '/socket.io/socket.io',
-        'Maybe': 'vendor/maybe',
-        'io' : 'vendor/io'
+        'Maybe': '../../common/scripts/maybe.amd',
+        'io' : '../../common/scripts/io.amd'
     },
     shim: {
         jquery: {

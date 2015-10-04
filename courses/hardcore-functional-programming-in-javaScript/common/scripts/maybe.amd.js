@@ -1,8 +1,8 @@
 define([], function() {
 
-  var MaybeType = function(x){ this.val = x; } 
-    , Just = function(x){ this.val = x; } 
-    , Nothing = function(x){ this.val = x; } 
+  var MaybeType = function(x){ this.val = x; }
+    , Just = function(x){ this.val = x; }
+    , Nothing = function(x){ this.val = x; }
     ;
 
   //+ notThere :: a -> Bool
