@@ -44,7 +44,7 @@ define([
 
     // termURL :: String -> URL
     var termUrl = function(term){
-        return "http://gdata.youtube.com/feeds/api/videos?" +
+        return "https://www.googleapis.com/youtube/v3/videos?&part=snippet&maxResults=25" +
         $.param({q: term, alt: 'json'})
     };
 
