@@ -181,7 +181,140 @@ c = 0.3;
     * throw - can throw anything
 
 ## Function the Ultimate
+* Functions are first class citizens. They inherit from Function.prototype. Allows them to be:
+    * passed as an argument to a function'
+    * returned from a function
+    * assigned to a varaible
+    * stored in an object or array
+* function statement. Used in with conjunction with the function prefix.
 
+```javascript
+// function statement declaration
+function foo() {}
+
+//resolves to
+var foo = undefined;
+foo = function foo() {};
+```
+* Return statement - always returns a value. If empty ie return; then the return value is undefined. Except for constructions, whose default return value is this.
+* Pseudo elements - arguments, this.
+    * arguments - array like, in that it includes a length but it's not actually an array.
+    * this - contains a reference to the object of invocation. allows a method to know what object it is concerned with.
+* Invocation - Four forms to invoke a method.
+    * Method - thisObject.methodName. this is set to thisObject, the object containing the function.
+    * Function - this is set to the global object. Fixed in ES5 Strict. An inner function does not get access to the outer this.
+    * Constructor - when called with the new operator, a new object is created and assigned to this. IF there is not an explicit return value, then this will be returned.
+    * Apply - A function's apply or call method allows for callign the function, explicitly specifying thisObject.
+* Recursion - quicksort is a good example of recursion.
+* Closure - The context of an inner function includes the scope of the outer function. An inner function keeps the context even after the parent is returned. Function scopes work like block scope.
+* Prototypical inheritance
+
+```javascript
+// singleton using the module pattern
+var singleton = (function (){
+    var privateVariable;
+    function privateFunction(x){
+        // privateVariable
+    }
+    return {
+        firstMethod: function(a,b){
+            // privateVariable
+        },
+        secondMethod: function(c){
+            // privateVariable
+        }
+    };
+}());
+
+// same code to add this to a global object
+(function (){
+    var privateVariable;
+    function privateFunction(x){
+        // privateVariable
+    }
+    GLOBAL.method = {
+        firstMethod: function(a,b){
+            // privateVariable
+        },
+        secondMethod: function(c){
+            // privateVariable
+        }
+    };
+}());
+
+// traditional prototypical inheritance
+function Gizmo(id){
+    this.id = id;
+}
+
+Gizmo.prototype.toString = function(){
+    return "gizmo " + this.id;
+}
+
+function Hoozit(id){
+    this.id = id;
+}
+Hoozit.prototype = new Gizmo();
+Hoozit.prototype.test = function(id){
+    return this.id === id;
+};
+
+// Functional inheritance
+function gizmo(id) {
+    return {
+        toString: function () {
+            return "gizmo " + this.id;
+        }
+    };
+}
+
+function hoozit(id){
+    var that = gizmo(id);
+    that.test = function (testid) {
+        return testid === id;
+    };
+    return that;
+}
+
+// recursive factorial
+function memoizer(memo, formula) {
+    var recur = function (n) {
+        var result = memo[n];
+        if(typeof result !== 'number') {
+            result = formula(recur, n);
+            memo[n] = result;
+        }
+        return result;
+    }
+    return recur;
+};
+
+var factorial = memoizer([1, 1], function (recur, n) {
+    return n * recur(n-1);
+});
+
+var fibonacci = memoizer([0, 1], function (recur, n){
+    return recur(n-1) + recur(n-2);
+});
+
+// The Y Combinator
+function y(le) {
+    return (function (f) {
+        return f(f);
+    }(function (f) {
+        return le(function (x) {
+            return f(f)(x);
+        });
+    }));
+}
+
+var factorial = y(function (fac) {
+    return function (n) {
+        return n <= 2 ? n : n * fac(n - 1);
+    };
+});
+```
+* The Little Lisper / [The Little Schemer](http://javascript.crockford.com/little.html) - Book that goes through recursion.
 
 
 ## Problems
