@@ -63,9 +63,11 @@ console.log(applyf(mul)(5)(6));
 // Exercise Six
 // Write a function that takes a function and an argument and
 // returns a function that can supply a second argument.
-var curry = function(a){
-    
-}
+var curry = function(fn, a){
+    return function(b) {
+        return fn(a,b);
+    };
+};
 
 console.log('Exercise Six');
 var add3 = curry(add, 3);
