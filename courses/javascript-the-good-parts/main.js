@@ -2,7 +2,7 @@
 // Excercise One
 var identity = function(a) {
 	return a;
-}
+};
 
 // call and invoke the first function.
 console.log('Exercise One');
@@ -11,11 +11,11 @@ console.log(identity(3));
 // Exercise Two
 var add = function(a, b) {
 	return a + b;
-}
+};
 
 var mul = function(a, b) {
 	return a * b;
-}
+};
 
 console.log('Exercise Two');
 console.log('Add: ', add(3, 4), 'Multiply: ', mul(3, 4));
@@ -63,13 +63,87 @@ console.log(applyf(mul)(5)(6));
 // Exercise Six
 // Write a function that takes a function and an argument and
 // returns a function that can supply a second argument.
-var curry = function(fn, a){
-    return function(b) {
-        return fn(a,b);
-    };
+var curry = function(fn, a) {
+	return function(b) {
+		return fn(a, b);
+	};
 };
 
 console.log('Exercise Six');
 var add3 = curry(add, 3);
 console.log(add3(4));
 console.log(curry(mul, 5)(6));
+
+// Exercise Seven
+// Without writing any new functions, show three ways to
+// create the inc function
+
+console.log('Exercise Seven');
+var inc = addf(1);
+console.log(inc(5));
+console.log(inc(inc(5)));
+
+var inc = applyf(add)(1);
+console.log(inc(5));
+console.log(inc(inc(5)));
+
+var inc = curry(add, 1);
+console.log(inc(5));
+console.log(inc(inc(5)));
+
+// Exercise Eight
+// Write methodize, a function that converts a binary
+// function to a method
+var methodize = function(func) {
+	return function(a) {
+		return func(this, a);
+	};
+};
+
+console.log('Exercise Eight');
+Number.prototype.add = methodize(add);
+console.log((3).add(4));
+
+// Exercise Nine
+// Write demethodize, a function that converst a method
+// to a binary function
+var demethodize = function(func) {
+	return function(that, y) {
+		return func.call(that, y);
+	};
+};
+
+console.log('Exercise Nine');
+console.log(demethodize(Number.prototype.add)(5, 6));
+
+// Exercise Ten
+// Write a function twice that takes a binary function and
+// return a unary function that passes its argument to the
+// binary function twice.
+var twice = function(func) {
+	return function(a) {
+		return func(a, a);
+	};
+};
+
+console.log('Exercise Ten');
+var double = twice(add);
+console.log(double(11));
+
+var square = twice(mul);
+console.log(square(11));
+
+// Exercise Eleven
+// Write a function composeu that takes two unary functions
+// and returns a unary function that calls them both.
+var composeu = function(funcA, funcB) {
+	return function(a) {
+		return funcB(funcA(a));
+	};
+};
+
+console.log('Exercise Eleven');
+console.log(composeu(double, square)(3));
+
+// Exercise Twelve
+// 
