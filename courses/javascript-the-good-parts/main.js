@@ -146,4 +146,94 @@ console.log('Exercise Eleven');
 console.log(composeu(double, square)(3));
 
 // Exercise Twelve
-// 
+// Write a function composeb that takes two binary functions
+// and returns a function that calls them both.
+var composeb = function(funcA, funcB) {
+	return function(a, b, c) {
+		return funcB(funcA(a, b), c);
+	};
+};
+
+console.log('Exercise Twelve');
+console.log(composeb(add, mul)(2, 3, 5));
+
+// Exercise Thirteen
+// Write a function that allows another function
+// to only be called once.
+var once = function(func) {
+	var hasReturned = false;
+	return function(a, b) {
+		if (hasReturned) {
+			throw new Error();
+		} else {
+			hasReturned = true;
+			return func(a, b);
+		}
+	};
+};
+// var once = function(func){
+//     return function () {
+//         var f = func;
+//         func = null;
+//         return f.apply(this, arguments);
+//     };
+// };
+
+console.log('Exercise Thirteen');
+var addOnce = once(add);
+console.log(addOnce(3, 4));
+try {
+	addOnce(3, 4);
+} catch (e) {
+	console.log('Caught Error');
+}
+
+// Exercise Fifteen
+// Write a factory function that returns two functions
+// that implement an up/down counter.
+var counterf = function(a) {
+	var inc = function() {
+		return ++a;
+	};
+	var dec = function() {
+		return --a;
+	};
+	return {
+		inc: inc,
+		dec: dec
+	};
+};
+
+console.log('Exercise Fifteen');
+var counter = counterf(10);
+console.log(counter.inc());
+console.log(counter.dec());
+
+// Exercise Sixteen
+// Make a revocable function that takes a nice function,
+// and returns a revoke function that denies access to the nice function,
+// and an invoke function that can invoke the nice function until it is revoked.
+var log = function(a) {
+	console.log(a);
+};
+
+var revocable = function(nice) {
+	return {
+		invoke: function() {
+			return nice.apply(this, arguments);
+		},
+		revoke: function() {
+			nice = null;
+		}
+	};
+};
+
+console.log('Exercise Sixteen');
+var temp = revocable(log);
+temp.invoke(7);
+temp.revoke();
+try {
+	temp.invoke(8);
+} catch (e) {
+	console.log('Caught Error');
+}
