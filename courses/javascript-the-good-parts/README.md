@@ -318,7 +318,17 @@ var factorial = y(function (fac) {
 
 
 ## Problems
+See main.js
 
 ## Monads & Gonads
+* Functional Programming - originally started with FORTRAN II (1958) with functions.
+* Pure Functional Programming - the same function always returns the same results. Functions as maps. Programming without side-effects. To accomplish this in JavaScript you would remove the following:
+    * assignments
+    * loops (use recursion instead)
+    * freeze all array literals
+    * object literals
+    * Data and Math.random
+* Memoization - allows you to store the values due to the fact that the data is immutable. Otherwise, you have to rely on caching which is challenging.
+* Monads - takes a function and returns an object. 
 
 ## The metamorphosis of Ajax
