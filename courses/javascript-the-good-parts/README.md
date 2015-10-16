@@ -329,6 +329,23 @@ See main.js
     * object literals
     * Data and Math.random
 * Memoization - allows you to store the values due to the fact that the data is immutable. Otherwise, you have to rely on caching which is challenging.
-* Monads - takes a function and returns an object. 
+* Monads - takes a function and returns an object.
+
+```javascript
+// Identity Monad
+function MONAD(){
+    return function unit(value) {
+        var monad = Object.create(null);
+        monad.bind = function(func) {
+            return func(value);
+        };
+        return monad;
+    };
+}
+
+var unit = MONAD();
+var monad = unit('hello world');
+monad.bind(alert);
+```
 
 ## The metamorphosis of Ajax
