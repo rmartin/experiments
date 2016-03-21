@@ -9,6 +9,10 @@ const inValidCSVFields = ['key', 'locale', 'originalSource', 'absTargetPath', 'r
 
 const prefixPath = '/Users/roymartin/Dropbox/Documents/ModOp/Clients/AKQA/assets/FLATTENED_LOC_AUDIO/';
 const pickListData = [{
+    'name': 'Beeps',
+    'key': 'beeps',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/beeps/.content.xml'
+}, {
     'name': 'Drill Descriptor',
     'key': 'drill-descriptor',
     'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/drill-descriptor/.content.xml'
@@ -20,6 +24,26 @@ const pickListData = [{
     'name': 'Drill Duration',
     'key': 'drill-duration',
     'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/drill-duration/.content.xml'
+}, {
+    'name': 'Drill Reminder',
+    'key': 'drill-reminder',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/drill-reminder/.content.xml'
+}, {
+    'name': 'Drill Reps',
+    'key': 'drill-reps',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/drill-reps/.content.xml'
+}, {
+    'name': 'Drill Transition',
+    'key': 'drill-transition',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/drill-transition/.content.xml'
+}, {
+    'name': 'Workout Intro',
+    'key': 'workout-intro',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/workout-intro/.content.xml'
+}, {
+    'name': 'Workout Outro',
+    'key': 'workout-outro',
+    'path': '/Users/roymartin/Code/aem/ntc-5-cms/ntccms/ui.content/src/main/content/jcr_root/content/ntccms/en_US/pick-lists/workout-outro/.content.xml'
 }];
 const locales = ['en_GB', 'ar_BH', 'ar_OM', 'ar_SA', 'ar_AE', 'ar_LB', 'ar_QA', 'ar_KU', 'es_ES', 'es_MX', 'es_AR', 'th_TH', 'ja_JP', 'it_IT', 'fr_FR', 'ru_RU', 'ko_KR', 'tr_TR', 'de_DE', 'zh-Hant', 'zh-Hans', 'id_ID', 'pt_BR', 'sv_SE', 'nl_NL'];
 
@@ -28,8 +52,6 @@ var parseXML = function(rootNode, pickListLocaleData) {
         if (typeof n[0] !== 'undefined' && n[0]['$']['key'] !== 'empty') {
             // iterate through all locales and ensure that the property is setup for each item
             locales.map(function(locale) {
-
-
 
                 var localeFilenameTransformed =
                     locale
@@ -60,6 +82,7 @@ var parseXML = function(rootNode, pickListLocaleData) {
                         'absTargetPath': targetFilePath.replace('en_US', locale),
                         'relSrcPath': filePath
                     });
+                    ``
                 }
             }.bind(this));
         }
