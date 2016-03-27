@@ -5,7 +5,7 @@ const _ = require('lodash');
 const json2csv = require('json2csv');
 
 const validCSVFields = ['absTargetPath', 'relSrcPath', 'mimeType'];
-const inValidCSVFields = ['key', 'locale', 'originalSource', 'absTargetPath', 'relSrcPath'];
+const inValidCSVFields = ['key', 'locale', 'relSrcPath', 'absTargetPath', 'originalSource'];
 
 const prefixPath = '/Users/roymartin/Dropbox/Documents/ModOp/Clients/AKQA/assets/FLATTENED_LOC_AUDIO/';
 const pickListData = [{
@@ -47,7 +47,11 @@ const pickListData = [{
 }];
 const locales = ['en_GB', 'ar_BH', 'ar_OM', 'ar_SA', 'ar_AE', 'ar_LB', 'ar_QA', 'ar_KU', 'es_ES', 'es_MX', 'es_AR', 'th_TH', 'ja_JP', 'it_IT', 'fr_FR', 'ru_RU', 'ko_KR', 'tr_TR', 'de_DE', 'zh-Hant', 'zh-Hans', 'id_ID', 'pt_BR', 'sv_SE', 'nl_NL'];
 
-var parseXML = function(rootNode, pickListLocaleData) {
+var cleanDataFolder = function() {
+
+}
+
+var parseXML = function(rootNode, pickListLocaleData, pickListKey) {
     _.mapValues(rootNode, function(n) {
         if (typeof n[0] !== 'undefined' && n[0]['$']['key'] !== 'empty') {
             // iterate through all locales and ensure that the property is setup for each item
@@ -58,15 +62,54 @@ var parseXML = function(rootNode, pickListLocaleData) {
                     .toLowerCase()
                     .replace('es_mx', 'es_xl')
                     .replace(/ar_[a-z]{2}/, 'ar_sa')
-                    .replace(/zh-[a-z]{4}/, 'en_gb')
-                    .replace(/en_gb/, 'en_gb_M')
+                    .replace(/zh-[a-z]{4}/, 'ko_ko')
                     .replace(/ko_kr/, 'ko_ko')
                     .replace(/id_id/, 'in_in')
-                    .replace(/sv_se/, 'sv_sv'),
+                    .replace(/sv_se/, 'sv_sv');
 
-                    currentKey = n[0]['$']['key'],
+                // transform beeps to en_us
+                if (pickListKey === 'beeps') {
+                    localeFilenameTransformed =
+                        localeFilenameTransformed
+                        .replace(/[a-z]{2}_[a-z]{2}/, 'en_us')
+                        .replace(/[a-z]{2}-[a-z]{4}/, 'en_us')
+                        .replace('en_us_M', 'en_us');
+                }
+
+                var currentKey = n[0]['$']['key'],
                     filePath = currentKey + '_' + localeFilenameTransformed + '.mp3',
+                    filePathAltRemoved =
+                    filePath
+                    .replace(' L', '')
+                    .replace(' M', '')
+                    .replace(' L', '')
+                    .replace('-L', '')
+                    .replace('-M', '')
+                    .replace(' ALT 1', '')
+                    .replace(' ALT 2', '')
+                    .replace(' ALT', ''),
+
                     targetFilePath = n[0]['$']['fileReference'];
+
+                // if en_GB check to see if file exists, if not try the M path
+                if (locale === 'en_GB') {
+                    if (!checkIfFileExists(filePath)) {
+                        localeFilenameTransformed =
+                            localeFilenameTransformed
+                            .replace(/en_gb/, 'en_gb_M');
+
+                        filePath = currentKey + '_' + localeFilenameTransformed + '.mp3';
+                        filePathAltRemoved = filePath
+                            .replace(' L', '')
+                            .replace(' M', '')
+                            .replace(' L', '')
+                            .replace('-L', '')
+                            .replace('-M', '')
+                            .replace(' ALT 1', '')
+                            .replace(' ALT 2', '')
+                            .replace(' ALT', '');
+                    }
+                }
 
                 if (checkIfFileExists(filePath)) {
                     pickListLocaleData.valid.push({
@@ -74,6 +117,16 @@ var parseXML = function(rootNode, pickListLocaleData) {
                         'relSrcPath': filePath,
                         'mimeType': 'audio/mp3'
                     });
+
+                    // if the first pass doesn't work check to see if the original exists.
+                    // if so, drop the alt and use the original and send the warning
+                } else if (checkIfFileExists(filePathAltRemoved)) {
+                    pickListLocaleData.valid.push({
+                        'absTargetPath': targetFilePath.replace('en_US', locale),
+                        'relSrcPath': filePathAltRemoved,
+                        'mimeType': 'audio/mp3'
+                    });
+                    console.log('Warning - Couldn\'t find alternate using the original for ' + filePath.replace(' ALT', ''));
                 } else {
                     pickListLocaleData.missing.push({
                         'key': currentKey,
@@ -92,6 +145,11 @@ var parseXML = function(rootNode, pickListLocaleData) {
 }
 
 var writeCSVFile = function(csvJSON, csvFields, fileName) {
+
+    // exit if there is no data to write
+    if (csvJSON.length === 0) {
+        return;
+    }
     json2csv({
         data: csvJSON,
         fields: csvFields
@@ -135,7 +193,7 @@ var parsePickListData = function(pickListNode) {
             console.log('Parsing ' + pickListNode.name);
 
             // parseXML into JSON
-            pickListLocaleData = parseXML(result['jcr:root']['jcr:content'][0]['par'][0], pickListLocaleData);
+            pickListLocaleData = parseXML(result['jcr:root']['jcr:content'][0]['par'][0], pickListLocaleData, pickListNode.key);
 
             // Write valid JSON to CSV
             writeCSVFile(pickListLocaleData.valid, validCSVFields, pickListNode.key);

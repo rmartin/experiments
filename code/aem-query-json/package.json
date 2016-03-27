@@ -11,6 +11,8 @@
   "devDependencies": {
     "json2csv": "^3.2.0",
     "lodash": "^4.6.1",
+    "promise": "^7.1.1",
+    "request": "^2.69.0",
     "rmdir": "^1.2.0",
     "xml2js": "^0.4.16"
   }
