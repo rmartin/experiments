@@ -119,3 +119,147 @@ propTypes: {
     hasErrors:  React.PropTypes.func.isRequired
 }
 ```
+
+## React Router
+
+### Overview
+* Name is implicitly used for the router, can be overwritten with route param
+* Use link to direct to a route
+
+### Router
+```javascript
+<Route name="app" path="/" handler={require('./components/app')}>
+    <DefaultRoute handler={require('./components/home')} />
+    <Route name="authors" handler={require('./components/authors/author')} />
+    <Route name="about" handler={require('./components/about/about')} />
+</Route>
+```
+
+### Params and Querystrings
+```javascript
+// Given a route like this:
+<route path="/course/:courseId" handler={Course} />
+
+// and a URL like this:
+'course/clean-code?module=3'
+
+// the component props will be populated
+var Course = React.createClass({
+    render: function(){
+        this.props.params.courseId; //clean-code
+        this.props.query.module; // 3
+        this.props.path; // /course/clean-code/?module=3
+    }
+})
+
+```
+
+### Link
+```javascript
+// URL: /user/1
+
+// Route:
+<route name="user" path="/user/:userId" />
+
+// JSX:
+<Link to="user" params={{userId: 1}}>Bobby Tables</Link>
+// Generates
+// <a href="/user/1">Bobby Tables</a>
+```
+
+### Redirects
+```javascript
+// Alias Redirect
+var Redirect = Router.Redirect;
+
+// Create new route
+<Redirect from="old-path" to="name-of-new-path" />
+
+// Redirect about-us -> about
+<Redirect from="about-us" to="about" />
+
+// Redirect allow subfolders of about/* to about
+<Redirect from="about/*" to="about" />
+
+// Redirect common spelling mistakes
+<Redirect from="awthurs" to="authors" />
+```
+
+### Transitions
+* willTransitionTo - Determine if page should be transitioned to
+* willTransitionFrom - Run checks before user navigates away
+
+```javascript
+var Settings = React.createClass({
+    statics: {
+        willTransitionTo: function (transition, params, query, callback){
+            if(!isLoggedIn){
+                transition.abort();
+                callback();
+            }
+        });
+    },
+    willTransitionFrom: function(transition, component){
+        if(component.formHasUnsavedData()){
+            if(!confirm('Sure you want to leave without saving?')){
+                transition.abort();
+            }
+        }
+    }
+})
+```
+
+### Hash vs History
+This can be changed within the router.
+
+```javascript
+// Defaults to hash state
+Router.run(routes, function(Handler){
+    React.render(<Handler/>, document.getElementById('app'));
+});
+
+// HTML5 push state
+Router.run(routes,Router.HistoryLocation, function(Handler){
+    React.render(<Handler/>, document.getElementById('app'));
+});
+```
+
+#### Hash location
+* example.com/#courses
+* Ugly URLs
+* Works in all browsers
+* Not compatible with server-rendering
+
+#### History location
+* example.com/courses
+* Clean URLs
+* IE10+
+* Compatible with server rendering
+
+### Mixins
+* Cross-cutting concerns
+* Shared code between multiple components
+
+```javascript
+var ManageAuthorPage = React.createClass({
+    mixins : [
+        Router.Navigation,
+        Router.State
+    ]
+});
+```
+
+#### Navigation Mixin
+```javascript
+// Go to new route
+this.transitionTo('contact');
+
+// Replace current route
+this.replaceWith('contact');
+
+// Go Back
+this.goBack;
+
+// Create a url to a route
+makePath(routeName, params, query);
+```
