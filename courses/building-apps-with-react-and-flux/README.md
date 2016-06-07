@@ -263,3 +263,49 @@ this.goBack;
 // Create a url to a route
 makePath(routeName, params, query);
 ```
+
+## Flux
+* Pattern
+* Centralized dispatcher
+* Unidirectional data flows
+ * Two-way Binding: viewmodel <--> View
+ * Unidirectional React: Action (ex: delete user) -> Dispatcher (ex: notify everyone who cares) -> Store (hold app state) -> React View (repeat)
+* Deals with actions and data changes
+* Facebook Flux Pattern
+* This is not an MVC Pattern
+
+
+### Actions
+* Encapsulates events
+* Triggered by user interactions and server
+* Passed to Dispatcher
+* Payload has type and data
+```javascript
+{
+    type: USER_SAVED,
+    data:{
+        firstName: 'Cory',
+        lastName: 'House'
+    }
+}
+```
+
+### Dispatcher
+* Central Hub - There's only one per app
+* Holds list of callbacks
+* Broadcasts payload to registered callbacks
+* Constants
+ * Keeps things organized
+ * Provides high level view of what the app actually does
+
+### Store
+* Holds app state, logic, data retrieval
+* Not a model - contains models
+* One, or many
+* Registers callback with Dispatcher
+* Users Node's EventEmitter
+* Structure - Every store has these common traits (aka interface)
+ * Extend EventEmitter
+ * addChangeListener and removeChangeListenser
+ * emitChange
+* As an application grows, the dispatcher becomes more vital, as it can be used to manage dependencies between the stores by invoking the registered callbacks in a specific order. Stores can declaratively wait for other stores to finish updating, and then update themselves accordingly.  
