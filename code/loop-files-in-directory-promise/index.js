@@ -7,7 +7,7 @@ let args = process.argv.slice(2),
 fs.readdir(dirPath).then(listing => {
     for (item in listing) {
         if (listing[item].includes(filter)) {
-            console.log(listing[item])
+            console.log('http://intelsrt.s3.amazonaws.com/phase-4/' + listing[item])
         }
     }
 }).catch(err => {
