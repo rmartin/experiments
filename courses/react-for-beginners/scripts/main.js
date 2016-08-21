@@ -50,9 +50,21 @@ var App = React.createClass({
         // set state
         this.setState({fishes: this.state.fishes});
     },
+    removeFish: function(key) {
+        if (confirm('Are you sure you want to remove this fish?')) {
+            this.state.fishes[key] = null;
+            this.setState({fishes: this.state.fishes});
+        }
+    },
     addToOrder: function(index) {
         this.state.order[index] = this.state.order[index] + 1 || 1;
         this.setState({order: this.state.order});
+    },
+    removeOrder: function(key) {
+        if (confirm('Are you sure you want to remove this order?')) {
+            delete this.state.order[key];
+            this.setState({order: this.state.order});
+        }
     },
     loadSample: function() {
         this.setState({fishes: require('./sample-fishes')});
@@ -69,9 +81,8 @@ var App = React.createClass({
                         {Object.keys(this.state.fishes).map(this.renderFish)}
                     </ul>
                 </div>
-                <Order order={this.state.order} fishes={this.state.fishes}/>
-                <Inventory addFish={this.addFish} loadSample={this.loadSample}
-                    fishes={this.state.fishes} linkState={this.linkState}/>
+                <Order order={this.state.order} fishes={this.state.fishes} removeOrder={this.removeOrder}/>
+                <Inventory addFish={this.addFish} removeFish={this.removeFish} loadSample={this.loadSample} fishes={this.state.fishes} linkState={this.linkState}/>
             </div>
         )
     }
@@ -155,6 +166,7 @@ var Order = React.createClass({
         return (
             <li className="item" key={key}>
                 {count}lbs {fish.name}
+                <button onClick={this.props.removeOrder.bind(null, key)}>&times;</button>
                 <span className="price">{helpers.formatPrice(fish.price * count)}</span>
             </li>
         );
@@ -178,6 +190,7 @@ var Order = React.createClass({
                 <h2 className="order-title">Your Order</h2>
                 <ul className="order">
                     {orderIds.map(this.renderItem)}
+
                     <li className="total">
                         <strong>Total:</strong>
                         {helpers.formatPrice(total)}
@@ -192,13 +205,13 @@ var Order = React.createClass({
     Inventory Component
 */
 var Inventory = React.createClass({
-    renderInventory: function(key){
+    renderInventory: function(key) {
         var linkState = this.props.linkState;
         return (
             <div className="fish-edit" key={key}>
-                <input type="text" valueLink={linkState('fishes.' + key + '.name')} />
-                <input type="text" valueLink={linkState('fishes.' + key + '.price')} />
-                <button>Remove Fish</button>
+                <input type="text" valueLink={linkState('fishes.' + key + '.name')}/>
+                <input type="text" valueLink={linkState('fishes.' + key + '.price')}/>
+                <button onClick={this.props.removeFish.bind(null, key)}>Remove Fish</button>
             </div>
         )
     },
@@ -220,7 +233,6 @@ var Inventory = React.createClass({
 */
 var Fish = React.createClass({
     addToOrder: function() {
-        console.log('adding fish', this.props.index);
         this.props.addToOrder(this.props.index);
     },
     render: function() {
@@ -270,7 +282,7 @@ var StorePicker = React.createClass({
                 </select>
 
                 <textarea valueLink={linkState('fishes.' + key + '.desc')}></textarea>
-                <input type="text" valueLink={linkState('fishes.' + key + '.image')} />
+                <input type="text" valueLink={linkState('fishes.' + key + '.image')}/>
             </form>
         )
     }
