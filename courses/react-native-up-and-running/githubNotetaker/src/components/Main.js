@@ -5,7 +5,7 @@ import {
     StyleSheet,
     TextInput,
     TouchableHighlight,
-    ActivityIndicatorIOS
+    ActivityIndicator
 } from 'react-native';
 import api from '../utils/api';
 import Dashboard from './Dashboard';
@@ -116,11 +116,11 @@ export default class Main extends Component {
                     underlayColor="white" >
                     <Text style={styles.buttonText}> Search </Text>
                 </TouchableHighlight>
-                <ActivityIndicatorIOS
+                <ActivityIndicator
                     animating={this.state.isLoading}
                     color="#111"
                     size="large">
-                </ActivityIndicatorIOS>
+                </ActivityIndicator>
                 {showErr}
             </View>
         );
